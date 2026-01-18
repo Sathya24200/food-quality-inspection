@@ -21,9 +21,18 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/inspections', inspectionRoutes);
 
-// Root route
-app.get('/', (req, res) => {
+// Serve static files from the React frontend app
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// API Root route
+app.get('/api', (req, res) => {
     res.json({ message: 'Food Quality Inspection API is running' });
+});
+
+// Anything that doesn't match the above routes, send back index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 // Error handling middleware
